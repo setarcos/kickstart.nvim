@@ -87,8 +87,8 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+vim.g.mapleader = ','
+vim.g.maplocalleader = ','
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -129,7 +129,7 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
 -- Keep signcolumn on by default
-vim.opt.signcolumn = 'yes'
+vim.opt.signcolumn = 'no'
 
 -- Decrease update time
 vim.opt.updatetime = 250
@@ -162,6 +162,7 @@ vim.opt.scrolloff = 10
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+vim.keymap.set('n', '<leader>n', '<Cmd>set invnumber invrelativenumber<cr>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -703,6 +704,10 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'pylsp',
+        'clangd',
+        'texlab',
+        'rust_analyzer',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -723,48 +728,48 @@ require('lazy').setup({
     end,
   },
 
-  { -- Autoformat
-    'stevearc/conform.nvim',
-    event = { 'BufWritePre' },
-    cmd = { 'ConformInfo' },
-    keys = {
-      {
-        '<leader>f',
-        function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
-        end,
-        mode = '',
-        desc = '[F]ormat buffer',
-      },
-    },
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        local lsp_format_opt
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          lsp_format_opt = 'never'
-        else
-          lsp_format_opt = 'fallback'
-        end
-        return {
-          timeout_ms = 500,
-          lsp_format = lsp_format_opt,
-        }
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
-      },
-    },
-  },
+--   { -- Autoformat
+--     'stevearc/conform.nvim',
+--     event = { 'BufWritePre' },
+--     cmd = { 'ConformInfo' },
+--     keys = {
+--       {
+--         '<leader>f',
+--         function()
+--           require('conform').format { async = true, lsp_format = 'fallback' }
+--         end,
+--         mode = '',
+--         desc = '[F]ormat buffer',
+--       },
+--     },
+--     opts = {
+--       notify_on_error = false,
+--       format_on_save = function(bufnr)
+--         -- Disable "format_on_save lsp_fallback" for languages that don't
+--         -- have a well standardized coding style. You can add additional
+--         -- languages here or re-enable it for the disabled ones.
+--         local disable_filetypes = { c = true, cpp = true }
+--         local lsp_format_opt
+--         if disable_filetypes[vim.bo[bufnr].filetype] then
+--           lsp_format_opt = 'never'
+--         else
+--           lsp_format_opt = 'fallback'
+--         end
+--         return {
+--           timeout_ms = 500,
+--           lsp_format = lsp_format_opt,
+--         }
+--       end,
+--       formatters_by_ft = {
+--         lua = { 'stylua' },
+--         -- Conform can also run multiple formatters sequentially
+--         -- python = { "isort", "black" },
+--         --
+--         -- You can use 'stop_after_first' to run the first available formatter from the list
+--         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+--       },
+--     },
+--   },
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -786,12 +791,13 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+              require('luasnip.loaders.from_vscode').load({ paths = { '~/.config/nvim/snippets/' } })
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -902,7 +908,10 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'vim'
+
+      -- You can configure highlights by doing something like:
+      vim.cmd.hi 'Comment gui=none'
     end,
   },
 
@@ -946,31 +955,31 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
-  { -- Highlight, edit, and navigate code
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
-    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-    },
-    -- There are additional nvim-treesitter modules that you can use to interact
-    -- with nvim-treesitter. You should go explore a few and see what interests you:
-    --
-    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-  },
+--  { -- Highlight, edit, and navigate code
+--    'nvim-treesitter/nvim-treesitter',
+--    build = ':TSUpdate',
+--    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+--    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+--    opts = {
+--      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+--      -- Autoinstall languages that are not installed
+--      auto_install = true,
+--      highlight = {
+--        enable = true,
+--        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+--        --  If you are experiencing weird indenting issues, add the language to
+--        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+--        additional_vim_regex_highlighting = { 'ruby' },
+--      },
+--      indent = { enable = true, disable = { 'ruby' } },
+--    },
+--    -- There are additional nvim-treesitter modules that you can use to interact
+--    -- with nvim-treesitter. You should go explore a few and see what interests you:
+--    --
+--    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+--    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+--    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+--  },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -998,6 +1007,7 @@ require('lazy').setup({
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
+  { 'lervag/vimtex' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -1019,6 +1029,7 @@ require('lazy').setup({
     },
   },
 })
+
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

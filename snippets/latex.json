@@ -1,0 +1,12 @@
+{
+    "article": {
+        "prefix": "bA",
+        "body": "\\documentclass[UTF8,fontset=windows,10pt,a4paper]{ctexart}\n\\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}\n\\usepackage{graphicx}\n\\title{$1}\n\\begin{document}\n$0\n\\end{document}",
+        "description": "regular article"
+    },
+    "verbatim": {
+        "prefix": "bV",
+        "body": "\\begin{verbatim}\n$0\n\\end{verbatim}",
+        "description": "verbatim environment"
+    }
+}
