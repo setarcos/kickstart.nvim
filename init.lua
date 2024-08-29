@@ -737,7 +737,6 @@ require('lazy').setup({
             'rafamadriz/friendly-snippets',
             config = function()
               require('luasnip.loaders.from_vscode').lazy_load()
-              require('luasnip.loaders.from_vscode').load({ paths = { '~/.config/nvim/snippets/' } })
             end,
           },
         },
@@ -749,6 +748,7 @@ require('lazy').setup({
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
+      'hrsh7th/cmp-buffer',
     },
     config = function()
       -- See `:help cmp`
@@ -824,6 +824,7 @@ require('lazy').setup({
           },
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
+          { name = 'buffer' },
           { name = 'path' },
         },
       }
@@ -959,6 +960,7 @@ require('lazy').setup({
   },
 })
 
+require('luasnip.loaders.from_vscode').load({ paths = { '~/.config/nvim/snippets/' } })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
