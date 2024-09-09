@@ -8,5 +8,20 @@
         "prefix": "bV",
         "body": "\\begin{verbatim}\n$0\n\\end{verbatim}",
         "description": "verbatim environment"
+    },
+    "frame": {
+        "prefix": "bF",
+        "body": "\\begin{frame}\n\t\\frametitle{${1:<title>}}\n\t${0:${TM_SELECTED_TEXT}}\n\\end{frame}",
+        "description": "frame environment"
+    },
+    "column": {
+        "prefix": "bC",
+        "body": "\\begin{columns}\n\\column{0.5\\textwidth}\n${1}\n\\column{0.5\\textwidth}\n${0}\n\\end{columns}",
+        "description": "two columns environment"
+    },
+    "graphics": {
+        "prefix": "iG",
+        "body": "\\centering\n\\includegraphics[width=.8\\textwidth]{${0}}",
+        "description": "include graphics"
     }
 }
