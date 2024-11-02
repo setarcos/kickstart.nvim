@@ -164,6 +164,12 @@ vim.opt.fileencodings = 'utf-8,gbk'
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>n', '<Cmd>set invnumber invrelativenumber<cr>')
+-- Mapping for buffers
+vim.keymap.set('n', '<leader>j', '<Cmd>bnext<cr>')
+vim.keymap.set('n', '<leader>k', '<Cmd>bprevious<cr>')
+vim.keymap.set('n', '<leader>be', ':badd<space>')
+vim.keymap.set('n', '<leader>ba', '<Cmd>bufdo bd<cr>')  -- Close all buffers
+vim.keymap.set('n', '<leader>bd', '<Cmd>bdelete<cr>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
