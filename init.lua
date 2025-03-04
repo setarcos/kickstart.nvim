@@ -693,6 +693,18 @@ require('lazy').setup({
             },
           },
         },
+        pylsp = {  -- Add pylsp configuration here
+          settings = {
+            pylsp = {
+              plugins = {
+                pycodestyle = {
+                  ignore = { "E302", "E225" },  -- Ignore "expected 2 blank lines"
+                  maxLineLength = 100,  -- Example: Adjust max line length
+                },
+              },
+            },
+          },
+        },
       }
 
       -- Ensure the servers and tools above are installed
