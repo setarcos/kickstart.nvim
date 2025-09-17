@@ -167,6 +167,10 @@ vim.o.scrolloff = 10
 vim.o.confirm = true
 
 vim.opt.fileencodings = 'utf-8,gbk'
+
+vim.o.spell = true
+vim.o.spelllang = 'en_us,cjk'
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
