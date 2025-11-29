@@ -166,7 +166,8 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
-vim.opt.fileencodings = 'utf-8,gbk'
+vim.o.fileencodings = 'utf-8,gbk'
+vim.o.tabstop = 4
 
 vim.o.spell = true
 vim.o.spelllang = 'en_us,cjk'
