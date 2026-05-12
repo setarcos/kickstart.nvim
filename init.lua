@@ -184,6 +184,13 @@ do
   -- Clear highlights on search when pressing <Esc> in normal mode
   --  See `:help hlsearch`
   vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+  -- Hide line number
+  vim.keymap.set('n', '<leader>n', '<Cmd>set invnumber invrelativenumber<cr>')
+  -- Delete current buffer
+  vim.keymap.set('n', '<leader>bd', '<Cmd>bdelete<cr>', {desc = '[B]uffer [D]elete' })
+  -- Insert current date/time in insert mode
+  vim.keymap.set('i', '<F3>', '<C-r>=strftime("%Y-%m-%d %H:%M:%S")<cr>')
+  vim.keymap.set('n', '<F3>', 'i<C-r>=strftime("%Y-%m-%d %H:%M:%S")<cr><ESC>')
 
   -- Diagnostic Config & Keymaps
   --  See `:help vim.diagnostic.Opts`
