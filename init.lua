@@ -712,6 +712,20 @@ do
 
     stylua = {}, -- Used to format Lua code
 
+    -- pylsp configuration
+    pylsp = {
+      settings = {
+        pylsp = {
+          plugins = {
+            pycodestyle = {
+              ignore = { "E302", "E225" },  -- Ignore "expected 2 blank lines"
+              maxLineLength = 100,  -- Example: Adjust max line length
+            },
+          },
+        },
+      },
+    },
+
     -- Special Lua Config, as recommended by neovim help docs
     lua_ls = {
       on_init = function(client)
