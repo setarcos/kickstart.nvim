@@ -95,11 +95,11 @@ do
   -- Set <space> as the leader key
   -- See `:help mapleader`
   --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-  vim.g.mapleader = ' '
-  vim.g.maplocalleader = ' '
+  vim.g.mapleader = ','
+  vim.g.maplocalleader = ','
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -110,7 +110,7 @@ do
   vim.o.number = true
   -- You can also add relative line numbers, to help with jumping.
   --  Experiment for yourself to see if you like it!
-  -- vim.o.relativenumber = true
+  vim.o.relativenumber = true
 
   -- Enable mouse mode, can be useful for resizing splits for example!
   vim.o.mouse = 'a'
@@ -128,7 +128,7 @@ do
   vim.o.breakindent = true
 
   -- Enable undo/redo changes even after closing and reopening a file
-  vim.o.undofile = true
+  -- vim.o.undofile = true
 
   -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
   vim.o.ignorecase = true
@@ -171,6 +171,11 @@ do
   -- instead raise a dialog asking if you wish to save the current file(s)
   -- See `:help 'confirm'`
   vim.o.confirm = true
+
+  vim.o.fileencodings = 'utf-8,gbk'
+  vim.o.spell = true
+  vim.o.spelllang = 'en_us,cjk'
+  vim.o.tabstop = 4
 end
 
 -- ============================================================
@@ -184,6 +189,9 @@ do
   -- Clear highlights on search when pressing <Esc> in normal mode
   --  See `:help hlsearch`
   vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+  vim.keymap.set('n', '<leader>n', '<Cmd>set invnumber invrelativenumber<cr>')
+  -- Mapping for buffers
+  vim.keymap.set('n', '<leader>bd', '<Cmd>bdelete<cr>', {desc = '[B]uffer [D]elete' })
 
   -- Diagnostic Config & Keymaps
   --  See `:help vim.diagnostic.Opts`
@@ -251,6 +259,13 @@ do
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
     callback = function() vim.hl.on_yank() end,
   })
+
+  -- Restore cursor position when reopening files
+  vim.cmd[[au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]
+
+  -- Add F3 keymap for timestamp
+  vim.keymap.set('i', '<F3>', '<C-r>=strftime("%Y-%m-%d %H:%M:%S")<cr>')
+  vim.keymap.set('n', '<F3>', 'i<C-r>=strftime("%Y-%m-%d %H:%M:%S")<cr><ESC>')
 end
 
 -- ============================================================
@@ -471,7 +486,7 @@ do
   -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
   -- - sd'   - [S]urround [D]elete [']quotes
   -- - sr)'  - [S]urround [R]eplace [)] [']
-  require('mini.surround').setup()
+  -- require('mini.surround').setup()
 
   -- Simple and easy statusline.
   --  You could remove this setup call if you don't like it,
@@ -777,6 +792,19 @@ do
         },
       },
     },
+    -- pylsp configuration
+    pylsp = {
+      settings = {
+        pylsp = {
+          plugins = {
+            pycodestyle = {
+              ignore = { "E302", "E225" },  -- Ignore "expected 2 blank lines"
+              maxLineLength = 100,  -- Example: Adjust max line length
+            },
+          },
+        },
+      },
+    },
   }
 
   vim.pack.add {
@@ -804,6 +832,9 @@ do
   local ensure_installed = vim.tbl_keys(servers or {})
   vim.list_extend(ensure_installed, {
     -- You can add other tools here that you want Mason to install
+    'clangd',
+    'texlab',
+    'rust_analyzer',
   })
 
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -818,39 +849,39 @@ end
 -- SECTION 7: FORMATTING
 -- conform.nvim setup and keymap
 -- ============================================================
-do
-  -- [[ Formatting ]]
-  vim.pack.add { gh 'stevearc/conform.nvim' }
-  require('conform').setup {
-    notify_on_error = false,
-    format_on_save = function(bufnr)
-      -- You can specify filetypes to autoformat on save here:
-      local enabled_filetypes = {
-        -- lua = true,
-        -- python = true,
-      }
-      if enabled_filetypes[vim.bo[bufnr].filetype] then
-        return { timeout_ms = 500 }
-      else
-        return nil
-      end
-    end,
-    default_format_opts = {
-      lsp_format = 'fallback', -- Use external formatters if configured below, otherwise use LSP formatting. Set to `false` to disable LSP formatting entirely.
-    },
-    -- You can also specify external formatters in here.
-    formatters_by_ft = {
-      -- rust = { 'rustfmt' },
-      -- Conform can also run multiple formatters sequentially
-      -- python = { "isort", "black" },
-      --
-      -- You can use 'stop_after_first' to run the first available formatter from the list
-      -- javascript = { "prettierd", "prettier", stop_after_first = true },
-    },
-  }
-
-  vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
-end
+-- do
+--   -- [[ Formatting ]]
+--   vim.pack.add { gh 'stevearc/conform.nvim' }
+--   require('conform').setup {
+--     notify_on_error = false,
+--     format_on_save = function(bufnr)
+--       -- You can specify filetypes to autoformat on save here:
+--       local enabled_filetypes = {
+--         -- lua = true,
+--         -- python = true,
+--       }
+--       if enabled_filetypes[vim.bo[bufnr].filetype] then
+--         return { timeout_ms = 500 }
+--       else
+--         return nil
+--       end
+--     end,
+--     default_format_opts = {
+--       lsp_format = 'fallback', -- Use external formatters if configured below, otherwise use LSP formatting. Set to `false` to disable LSP formatting entirely.
+--     },
+--     -- You can also specify external formatters in here.
+--     formatters_by_ft = {
+--       -- rust = { 'rustfmt' },
+--       -- Conform can also run multiple formatters sequentially
+--       -- python = { "isort", "black" },
+--       --
+--       -- You can use 'stop_after_first' to run the first available formatter from the list
+--       -- javascript = { "prettierd", "prettier", stop_after_first = true },
+--     },
+--   }
+--
+--   vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
+-- end
 
 -- ============================================================
 -- SECTION 8: AUTOCOMPLETE & SNIPPETS
@@ -868,8 +899,11 @@ do
   --    See the README about individual language/framework/plugin snippets:
   --    https://github.com/rafamadriz/friendly-snippets
   --
-  -- vim.pack.add { gh 'rafamadriz/friendly-snippets' }
-  -- require('luasnip.loaders.from_vscode').lazy_load()
+  vim.pack.add { gh 'rafamadriz/friendly-snippets' }
+  require('luasnip.loaders.from_vscode').lazy_load()
+
+  -- Custom snippet path
+  require('luasnip.loaders.from_vscode').load({ paths = { '~/.config/nvim/snippets/' } })
 
   -- [[ Autocomplete Engine ]]
   vim.pack.add { { src = gh 'saghen/blink.cmp', version = vim.version.range '1.*' } }
@@ -915,7 +949,7 @@ do
     },
 
     sources = {
-      default = { 'lsp', 'path', 'snippets' },
+      default = { 'lsp', 'path', 'snippets', 'buffer' },
     },
 
     snippets = { preset = 'luasnip' },
@@ -948,7 +982,7 @@ do
   vim.pack.add { { src = gh 'nvim-treesitter/nvim-treesitter', version = 'main' } }
 
   -- Ensure basic parsers are installed
-  local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+  local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'latex' }
   require('nvim-treesitter').install(parsers)
 
   ---@param buf integer
@@ -1030,6 +1064,9 @@ do
   -- require 'custom.plugins.ui'
   -- require 'custom.plugins.git'
 end
+
+-- Additional plugins
+vim.pack.add { gh 'lervag/vimtex' }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
